@@ -36,11 +36,11 @@ func main() {
 	tmpl := template.Must(template.New("homepage").Parse(homePage))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		name, ok := r.Header["X-MS-CLIENT-PRINCIPAL-NAME"]
-		if !ok {
-			name = []string{"Unknown"}
+		name := r.Header.Get("X-MS-CLIENT-PRINCIPAL-NAME")
+		if name == "" {
+			name = "Unknown"
 		}
-		tmpl.Execute(w, name[0])
+		tmpl.Execute(w, name)
 	})
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
